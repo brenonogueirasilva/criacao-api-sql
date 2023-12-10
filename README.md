@@ -1,87 +1,94 @@
-# Projeto de Engenharia de Dados: Solução de Versionamento de Dados (CDC) com PySpark
+# Projeto de Engenharia de Dados: Disponibilização de dados através de uma API de um banco de dados SQL
 
 ## Introdução
 
-Este projeto foi concebido em resposta a uma necessidade identificada no meu ambiente de trabalho. Nossa equipe lida com uma tabela dentro de um Data Lake que sofre modificações (updates), o que impeça que seja possivel a existência de um histórico acessível. Curiosamente, a origem dessa tabela é um arquivo de backup de um banco de dados MySQL, o que impede de aplicar um processo de Change Data Capture (CDC) tradicional, o que nos levou a desenvolver um script capaz de simular um CDC.
+Dentro do escopo de atividades de um engenheiro de dados, a disponibilização ou recebimento de dados por meio de uma API é uma prática comum. Essa API pode ser consumida por diferentes aplicações, alinhando-se com as vantagens associadas à filosofia de microsserviços. Dentre outras como melhoria da segurança, a abstração eficiente de dados, e a flexibilidade de manutenção. 
 
-Dada a escala dessa tabela, com mais de dois milhões de linhas e mais de vinte colunas, optamos pelo uso do PySpark, uma ferramenta ideal para o processamento de volumes massivos de dados. Como linguagem de programação, escolhemos o Python e utilizamos o PySpark como uma interface para interagir com o Apache Spark.
+Nesse contexto, este projeto tem como objetivo o desenvolvimento de uma API capaz de realizar operações CRUD (Create, Read, Update, Delete) em um banco de dados MySQL hospedado no Cloud SQL, dentro do ambiente de nuvem da Google (GCP). Ao longo do desenvolvimento, serão incorporadas boas práticas de Integração Contínua e Entrega Contínua (CI/CD). Isso incluirá o provisionamento da infraestrutura como código, utilizando o Terraform, e a implementação de pipelines automatizadas de código. Essas práticas serão integradas ao GitHub, permitindo a execução automática em ambientes de produção ou desenvolvimento sempre que houver mudanças no repositório. 
 
 ## Tecnologias Utilizadas
 
-- **Python**: Utilizada como a linguagem de programação principal, junto com o framework PySpark, para desenvolver a pipeline capaz de simular o CDC e criar um histórico da tabela.
-- **PySpark**: Framework de Big Data utilizado para processar os dados e gerar o histórico da tabela.
-- **Minio Object Storage**: Uma camada de armazenamento que simula um Data Lake, proporcionando uma alternativa local ao Amazon S3. É utilizado como origem e destino das tabelas.
-- **Apache Airflow**: Necessário para a execução diária do script e orquestração da pipeline.
-- **Docker**: Utilizado para criar contêineres que hospedam o ambiente Python com PySpark, Minio e Apache Airflow.
+- **MySql**: banco de dados relacional no qual está armazenado os dados de produção utilizado para o desenvolvimento da API.
+- **CloudSql**: serviço gerenciado de banco de dados relacional na Cloud do Google utilizado para o Mysql. 
+- **Cloud Run**: Ambiente serverless que hospedará um contêiner contendo Python, FastAPI e outros requisitos essenciais. Este ambiente é responsável pela execução do backend da API. 
+- **FastApi**: Framework em Python utilizado para o desenvolvimento da API. Oferece desempenho eficiente e facilidade de desenvolvimento, possibilitando a criação de endpoints eficazes. 
+- **Python**: Linguagem de programação utilizada no projeto, integrada ao framework FastAPI para a implementação da lógica da API. 
+- **Secret Manager**: Serviço de armazenamento de senhas e outros dados sensíveis, utilizado para armazenar informações sobre as credencias do banco, garantindo maior segurança a API. 
+- **Terraform**: Ferramenta que permite o provisionamento eficiente de toda a infraestrutura necessária, seguindo a metodologia de Infraestrutura como Código (IaC). Facilita a gestão e manutenção consistente da infraestrutura 
+- **Docker**: Utilizado para criar imagens com as biliotecas necessárias que serão empregadas no CloudRun. 
+- **Cloud Build**: Servico que possibilita implementar o deploy automatico de codigo e imagens de containers na nuvem, funcionando de forma integrado ao GitHub
+- **GitHub**: Respositório responsável pelo versionamento do codigo, trabalhando de forma integrado ao 
+- **Api Gateway**: servico que fornece uma camada de gerenciamento, proteção e monitoramento da API, podendo ser utilizado tambem para unificar difernetes servicos e diferentes rotas de aplicações diferentes.
+
+<p align="left">
+<img src="/img/mysql-logo.png" alt="mysql" height="50" /> 
+<img src="/img/cloud-sql.png" alt="cloud_sql" height="50" />
+<img src="/img/cloud-run.png" alt="cloud_run" height="50" /> 
+<img src="/img/fast-api.png" alt="fast_api" height="50" />
+<img src="/img/python-logo.png" alt="python" height="50" />
+<img src="/img/secret-manager.png" alt="secret_manager" height="50" />
+<img src="/img/terraform.png" alt="terraform" height="50" />
+<img src="/img/docker-logo.png" alt="docker" height="50" />
+<img src="/img/git_hub.jpg" alt="git_hub" height="50" />
+<img src="/img/api_gateway.png" alt="api_gateway" height="50" />
+</p>
 
 ## Arquitetura do Projeto
 
-![Diagrama de Arquiteura do Projeto CDC](img/arquitetura_dados.png)
+![Diagrama de Arquiteura do Projeto](img/arquitetura_api_sql.png)
 
 
 ## Etapas do Projeto
-
 ### 1. Configuração do Ambiente
 
-O início deste projeto envolve o desenvolvimento de uma infraestrutura para suportar o desenvolvimento e execução do código. Optamos por utilizar o Docker devido à sua facilidade de uso. Para o processamento dos dados, utilizamos o PySpark. Para isso, é necessário um contêiner que inclua o Python, PySpark, Java (pré-requisito do PySpark) e outras bibliotecas essenciais, como Minio, Pandas e NumPy. Para alcançar isso, criamos um [Dockerfile](/Dockerfile) que nos permite criar uma imagem personalizada com todas as bibliotecas necessárias. Além disso, configuramos um arquivo [docker-compose](/docker-compose.yml) para criar um contêiner Python com a imagem personalizada mencionada acima e outro contêiner para o Minio. É crucial configurar uma rede do tipo "bridge" no docker-compose para permitir a comunicação entre esses contêineres. Dentro da estrutura do projeto, criamos uma pasta chamada "airflow" para incluir o [docker-compose](/Airflow/docker-compose.yaml) responsável por criar o contêiner do Apache Airflow. 
+A fonte de dados para a API é um banco de dados relacional simulando dados de produção de um aplicativo de e-commerce. Utilizaremos o CloudSQL, um serviço gerenciado de banco de dados relacional no Google Cloud Platform (GCP), com MySQL como Sistema Gerenciador de Banco de Dados (SGBD). Os dados estão disponíveis em um dataset da Olist, um conhecido e-commerce brasileiro, hospedado no Kaggle (https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce).
+Dentro da pasta source do código-fonte, há um diretório chamado data_ingestion. Nele, encontra-se um script Python (link do script) capaz de realizar a ingestão de dados da tabela de produtos no banco MySQL. As credenciais para interagir com o banco são armazenadas em um arquivo JSON no Secret Manager do GCP, sendo acessadas por meio de uma biblioteca que retorna essas credenciais para a conexão com o banco.
 
-Com a infra já configurada, estamos pronto para começar a codificar. Devido à natureza do projeto, estamos trabalhando com Programação Orientada a Objeto (POO), e as classes são organizadas na pasta [classe](/src/classes/) dentro do diretório [source](/src/). Todas as classes estão documentadas com o uso de docstrings para facilitar a compreensão da lógica do código.
+### 2. Desenvolvimento da Lógica da API
 
-### 2. Ingestão de Dados
+Com os dados já disponíveis no banco MySql é possível iniciar o desenvolvimento da lógica da API, para isso inicialmente será criada a classe MySql {colocar link da classe}, no qual possibilitará interagir com o banco, realizando qualquer tipo de operação CRUD necessária. Junto disso também foi criada a classe SecretManager, objeto que permite interagir o serviço de credencias do GCP, retornando as informações de autenticação necessárias para conexão com o banco. 
 
-Antes de começarmos a desenvolver o script PySpark para gerar o histórico das tabelas, é necessário configurar uma camada de armazenamento que simule a tabela. Utilizamos duas tabelas de exemplo: uma representa a tabela mais recente e a outra representa o histórico. Em seguida, criamos uma pipeline denominada  [ingestao_dados.py](/src/ingestao_dados.py/) que lê esses dois arquivos CSV e os salva no formato Parquet no bucket "gold" do Minio, simulando a camada "gold" de um Data Lake. Para simplificar a interação com o Minio, utilizamos as classes [ConectaMinio.py](/src/classes/conecta_minio.py) e [PysparkMinio.py](/src/classes/pyspark_minio.py). A primeira permite a criação de buckets, a listagem de arquivos e a inserção de arquivos na camada de armazenamento. A segunda,  [PysparkMinio.py](/src/classes/pyspark_minio.py), possibilita a leitura de arquivos do Data Lake e a escrita de arquivos nele através do PySpark.
+A API interage com a tabela de produtos, possuindo um endpoint chamado produtos, com quatro tipos de requisições diferentes seguindo o padrão REST API: GET (retorno de informações), PUT (alteração de dados), DELETE (exclusão) e POST (criação de registros). As requisições diferentes do GET necessitam de um objeto JSON no corpo da requisição, sendo validado por modelos definidos com a biblioteca Pydantic (verificados no arquivo base_models). A lógica das requisições e endpoints é implementada usando o framework FastAPI (ver arquivo endpoints). 
 
-### 3. Desenvolvimento da Lógica de Geração de Histórico
+A lógica de interação da API com o banco é realizada pela classe integrate_api_database, que transforma as entradas fornecidas pela requisição em consultas SQL para operações CRUD no banco. Adicionalmente, foi incorporada uma lógica de paginação para eficiência e desempenho. Para garantir a segurança, implementou-se a autenticação por meio de token JWT, utilizando as classes 1 e 2. 
 
-A próxima etapa do projeto envolve o desenvolvimento da lógica do script que compara duas tabelas e identifica as diferenças entre elas. O objetivo é criar uma tabela de histórico que mantém o registro das alterações ao longo do tempo, seguindo uma abordagem semelhante ao CDC (Change Data Capture). Para atingir esse objetivo, utilizamos a classe  [CapturaDadosAlterados.py](/src/classes/captura_dados_alterados.py). Esta classe compara duas tabelas, uma recente e uma de histórico, e executa as seguintes operações:
+### 3. Criação da Imagem Docker
 
-- Linhas novas são adicionadas à tabela de histórico.
-- Linhas que não sofreram alterações permanecem inalteradas.
-- Linhas que sofreram edições são marcadas como desativadas na tabela de histórico e as novas linhas são incluídas na tabela. A tabela de histórico resultante inclui uma coluna chamada "json_historico", que permite rastrear as alterações nas colunas das linhas desativadas. Isso fornece insights valiosos sobre as mudanças na tabela de produção.
+ Para viabilizar o deployment da API, um Dockerfile {mostrar link do DockerFile} foi criado. Este arquivo continha uma imagem Python com todas as bibliotecas necessárias para o projeto além de conter todo o código fonte da aplicação. Após a criação do contêiner, uma instrução foi executada para criar um serviço utilizando o Uvicorn em uma porta específica, que seria utilizada para acessar a API. 
 
-Abaixo é possível visualizar o resultado final da tabela de historico, sendo possível visualizar a coluna de ativo, no qual mostras as linhas ativas, que sao que possuem o ultimo resultado e as desativadas, linhas que já foram deletadas logicamente. A coluna criado_em e editado_em informa a data de criação do registo e edição para quando o registro vier a ser desativado e por fim a coluna json_alteracoes, na qual é possível visualizar das linhas desativadas quais foram as mudanças e respectivas colunas.
+### 4. Criação do arquivo CloudBuild
 
-![Esboço Tabela Final](img/tabela_final.png)
+A API será executada em um serviço Cloud Run a partir de uma imagem Docker, que contém Python, dependências necessárias e código-fonte da aplicação. O Cloud Run será acionado por meio de um Cloud Build, que é disparado a cada evento de modificação de código no Git. Criou-se um arquivo cloudbuild.yaml (link do arquivo) que monta a imagem do Dockerfile, adiciona-a ao Artifact Registry e provisiona o Cloud Run a partir dessa imagem. Dessa forma, a cada modificação na lógica do código, o Cloud Build é acionado, atualizando a imagem do serviço e da aplicação. 
 
-### 4. Agendamento e Orquestração com Apache Airflow
+### 5. Provicionamento do Cloud Build
 
-Com o script de geração de histórico pronto, é importante agendar sua execução diariamente. Para isso, utilizamos o Apache Airflow para orquestrar a pipeline. Criamos uma DAG que é executada diariamente. Essa DAG utiliza o operador Docker para criar um contêiner com a imagem PySpark configurada inicialmente com as dependências necessárias, que executa o script principal responsável por gerar a tabela de histórico e escrevê-la no Data Lake. Com esta solução, podemos manter um registro detalhado das alterações na tabela de forma eficiente e escalável, permitindo uma análise abrangente das mudanças ao longo do tempo.
+Com o arquivo pronto, é desenvolvido o gatilho do Cloud Build, que possibilita a implementação de boas práticas de CI/CD. Inicialmente é necessário criar um repositório no GitHub com o código, Dockerfile e arquivo (nome do arquivo). Após, é criado um Cloud Build no GCP que se conecta a esse repositório, funcionando como um gatilho que executa os comandos mencionados anteriormente sempre que houver alterações no código na branch main. O provisionamento desse serviço e a conexão com o repositório do Git são realizados pelos arquivos do Terraform na pasta (link da pasta). 
+
+### 6. Implementando Api Gateway
+
+Com o Cloud Build configurado, a partir do primeiro commit na branch main do repositório, o serviço Cloud Run, que funciona como o backend da API, será provisionado. Agora, resta apenas configurar o API Gateway. Seu uso traz benefícios como gerenciamento de tráfego, roteamento, limitação de taxa de uso da API, logging e monitoramento centralizados. Além disso, funciona como uma solução de centralização de controle, unificando em uma única URL não apenas os endpoints da API desenvolvida, mas também de outras aplicações, mesmo em origens diferentes. O arquivo contendo o swagger do gateway pode ser encontrado no arquivo (link do arquivo), que seria substituído pelo arquivo em produção.
 
 
 #### Observação
 
-O projeto concentra-se no desenvolvimento da lógica da tabela CDC, e não necessariamente na segurança. Para simplificar o código, não serão criadas variáveis de ambiente para as credenciais, que, em vez disso, serão diretamente incorporadas no código.
+Todo o código é documentado através de docstrings, o que possibilita um entendimento mais profundo do código em si caso necessário.
+
+O provicionamento da CloudSql e Api gateway dentro de um cenário de produção já estariam sido implementandos, por isso não foram abordados ao longo do projeto.
 
 ## Pré-requisitos
 
-Antes de prosseguir com este projeto, é necessário ter o Docker Desktop instalado em sua máquina local.
+Para executar o código deste projeto, é necessário possuir uma conta no Google Cloud Platform (GCP). Além disso, é necessárop ter o aplicativo Terraform e o CLI Cloud instalados localmente em sua máquina. 
 
 ## Executando o Projeto
 
-Siga os passos abaixo para rodar este projeto:
-
-1. Copie o diretório do projeto para uma pasta local em seu computador.
-
+1. Copie o diretório do projeto para uma pasta local em seu computador
 2. Abra o terminal do seu computador e mova até o diretório do projeto.
-
-3. Entra na pasta src/jars e baixa o conector do pypsark no seguinte link https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bundle/1.11.1026/aws-java-sdk-bundle-1.11.1026.jar e salve nesta mesma pasta, retorne a pasta do projeto raiz novamente pelo terminal.
-
-4. Crie a imagem do container do PySpark executando o seguinte comando: `docker build -t pyspark_image .`
-
-5. Crie os containers do PySpark e MinIO usando o seguinte comando: `docker-compose up -d`
-
-6. Navegue até a pasta do Airflow no terminal, aguarde a execução do container do PySpark e, em seguida, crie o container do Airflow com o seguinte comando: `docker-compose up -d`
-
-## Conclusão 
-
-Ao longo do projeto, destacamos a utilização de tecnologias-chave, como o Python e o PySpark, para desenvolver uma pipeline capaz de simular o CDC e criar um histórico acessível da tabela. Além disso, integramos o Minio Object Storage e o Apache Airflow para suportar a ingestão de dados e a orquestração da pipeline.
-
-O desenvolvimento da lógica de geração de histórico permitiu-nos identificar e registrar as alterações na tabela, aplicando uma abordagem semelhante ao CDC tradicional. Isso nos proporcionou um registro histórico valioso das mudanças na tabela ao longo do tempo, contribuindo para uma análise detalhada e rastreabilidade dos dados. A orquestração do projeto por meio do Apache Airflow permitiu agendar a execução diária da solução, garantindo que o histórico da tabela seja mantido de forma consistente e atualizada.
-
-Embora o foco principal do projeto estivesse na lógica do CDC e na eficiência da solução, é importante observar que, por motivos de simplicidade, não foram criadas variáveis de ambiente para as credenciais, e estas foram diretamente incorporadas no código. Isso deve ser considerado ao implementar a solução em um ambiente de produção.
-
-Em resumo, este projeto de Engenharia de Dados proporcionou uma solução eficaz para a necessidade de versionamento de dados em uma tabela em constante modificação, demonstrando a aplicação bem-sucedida de tecnologias e conceitos de Big Data para resolver desafios reais.
-
-
+3. Crie uma conta de serviço no GCP com as credenciais para todos os serviços mencionados, baixe uma chave em um arquivo json e coloque o arquivo no diretório raiz com nome creds.json.
+4. Crie um arquivo json github_token.json, e crie uma chave github_token com o respectivo token da sua conta do github.
+5. Vá ao arquivo variaveis do terraform e subsitua pelos seu respectivo valores
+6. Crie um repositorio no git hub e suba todo o codigo pro projeto
+7. Execute o comando: `terraform init`.
+8. Execute o comando: `terraform plan`.
+9. Execute o comando: `terraform apply`.
 
 
