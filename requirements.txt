@@ -1,0 +1,14 @@
+pylance
+ipykernel
+google-cloud-secret-manager
+fastapi==0.103.1
+uvicorn
+pydantic==1.10.9
+pandas==2.0.2
+python-jose
+mysql-connector
+sqlalchemy==1.4.48
+email_validator
+passlib
+python-dotenv
+
