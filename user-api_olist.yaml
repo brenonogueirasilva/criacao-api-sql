@@ -1,0 +1,355 @@
+swagger: '2.0'
+info:
+  title: olist
+  description: Olist Swagger API
+  version: 1.0.0
+schemes:
+  - https
+produces:
+  - application/json
+paths:          
+  /authentication/signup:
+    post:
+      summary: Authentication_Signup
+      operationId: Authentication_Signup
+      x-google-backend:             
+        address: https://fastapi-service-build-utn4tts4gq-uc.a.run.app/authentication/signup
+      parameters:
+        - name: body_signup
+          in: body
+          required: true 
+          schema:
+            type: object
+            properties:
+              first_name:
+                type: string
+                description: first name user
+              last_name:
+                type: string
+                description: last name user
+              email:
+                type: string
+                format: email
+                description: user email
+              password:
+                type: string
+                description: user password
+            required:
+              - first_name
+              - last_name
+              - email
+              - password
+      responses:
+        '200':
+          description: A successful response
+          schema:
+            type: object
+        '400':
+          description: Bad Request
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+          schema:
+            type: object
+        '404':
+          description: Not Found
+          schema:
+            type: object
+        '500':
+          description: Internal server error
+          schema:
+            type: object
+        '503':
+          description: Internal server error
+          schema:
+            type: object
+        '422' :
+          description: Wrong Format of Request
+          schema:
+            type: object
+
+  /authentication/login:
+    post:
+      summary: Authentication_Login
+      operationId: Authentication_login
+      x-google-backend:             
+        address: https://fastapi-service-build-utn4tts4gq-uc.a.run.app/authentication/login
+      parameters:
+        - name: body_login
+          in: body
+          required: true 
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+                format: email
+                description: user email
+              password:
+                type: string
+                description: user password
+            required:
+              - email
+              - password
+      responses:
+        '200':
+          description: A successful response
+          schema:
+            type: object
+        '400':
+          description: Bad Request
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+          schema:
+            type: object
+        '404':
+          description: Not Found
+          schema:
+            type: object
+        '500':
+          description: Internal server error
+          schema:
+            type: object
+        '503':
+          description: Internal server error
+          schema:
+            type: object
+        '422' :
+          description: Wrong Format of Request
+          schema:
+            type: object
+  /produtos:
+    post:
+      summary: Produtos_Create
+      operationId: Produtos_create
+      x-google-backend:             
+        address: https://fastapi-service-build-utn4tts4gq-uc.a.run.app/produtos
+      parameters:
+        - name: body_delete
+          in: body
+          required: true 
+          schema:
+            type: object
+            properties:
+              product_id:
+                type: string
+              product_category_name:
+                type: string
+              product_name_length:
+                type: integer
+              product_description_length:
+                type: integer
+              product_photos_qty:
+                type: integer
+              product_weight_g:
+                type: integer
+              product_length_cm:
+                type: integer
+              product_height_cm:
+                type: integer
+              product_width_cm:
+                type: integer
+      responses:
+        '200':
+          description: A successful response
+          schema:
+            type: object
+        '400':
+          description: Bad Request
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+          schema:
+            type: object
+        '404':
+          description: Not Found
+          schema:
+            type: object
+        '500':
+          description: Internal server error
+          schema:
+            type: object
+        '503':
+          description: Internal server error
+          schema:
+            type: object
+        '422' :
+          description: Wrong Format of Request
+          schema:
+            type: object
+    get:
+      summary: Select_Produtos
+      operationId: Produtos_select
+      x-google-backend:             
+        address: https://fastapi-service-build-utn4tts4gq-uc.a.run.app/produtos
+      parameters:
+        - name: page
+          in: query
+          description: Número da página
+          type: integer
+        - name: page_size
+          in: query
+          description: Quantidade de itens por página (entre 5 e 100)
+          type: integer
+        - name: product_category_name
+          in: query
+          description: Suportado Parametro Map, parametro.lt=27
+          type: string
+        - name: product_name_length
+          in: query
+          description: Suportado Parametro Map, parametro.lt=27
+          type: string
+        - name: product_description_length
+          in: query
+          description: Suportado Parametro Map, parametro.lt=27
+          type: string
+        - name: product_photos_qty
+          in: query
+          description: Suportado Parametro Map, parametro.lt=27
+          type: string
+        - name: product_weight_g
+          in: query
+          description: Suportado Parametro Map, parametro.lt=27
+          type: string
+        - name: product_length_cm
+          in: query
+          description: Suportado Parametro Map, parametro.lt=27
+          type: string
+        - name: product_height_cm
+          in: query
+          description: Suportado Parametro Map, parametro.lt=27
+          type: string
+        - name: product_width_cm
+          in: query
+          description: Suportado Parametro Map, parametro.lt=27
+          type: string
+      responses:
+        '200':
+          description: A successful response
+          schema:
+            type: object
+        '400':
+          description: Bad Request
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+          schema:
+            type: object
+        '404':
+          description: Not Found
+          schema:
+            type: object
+        '500':
+          description: Internal server error
+          schema:
+            type: object
+        '503':
+          description: Internal server error
+          schema:
+            type: object
+        '422' :
+          description: Wrong Format of Request
+          schema:
+            type: object
+    put:
+      summary: Produtos_Update
+      operationId: Produtos_update
+      x-google-backend:             
+        address: https://fastapi-service-build-utn4tts4gq-uc.a.run.app/produtos
+      responses:
+        '200':
+          description: A successful response
+          schema:
+            type: object
+        '400':
+          description: Bad Request
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+          schema:
+            type: object
+        '404':
+          description: Not Found
+          schema:
+            type: object
+        '500':
+          description: Internal server error
+          schema:
+            type: object
+        '503':
+          description: Internal server error
+          schema:
+            type: object
+        '422' :
+          description: Wrong Format of Request
+          schema:
+            type: object
+    delete:
+      summary: Produtos_Delete
+      operationId: Produtos_delete
+      x-google-backend:             
+        address: https://fastapi-service-build-utn4tts4gq-uc.a.run.app/produtos
+      parameters:
+        - name: body_delete
+          in: body
+          required: true 
+          schema:
+            type: object
+            properties:
+              product_id:
+                type: string
+              product_category_name:
+                type: string
+              product_name_length:
+                type: object
+              product_description_length:
+                type: object
+              product_photos_qty:
+                type: object
+              product_weight_g:
+                type: object
+              product_length_cm:
+                type: object
+              product_height_cm:
+                type: object
+              product_width_cm:
+                type: object
+      responses:
+        '200':
+          description: A successful response
+          schema:
+            type: object
+        '400':
+          description: Bad Request
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+          schema:
+            type: object
+        '404':
+          description: Not Found
+          schema:
+            type: object
+        '500':
+          description: Internal server error
+          schema:
+            type: object
+        '503':
+          description: Internal server error
+          schema:
+            type: object
+        '422' :
+          description: Wrong Format of Request
+          schema:
+            type: object
+
+
+
+  
