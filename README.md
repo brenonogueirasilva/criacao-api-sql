@@ -29,6 +29,7 @@ Nesse contexto, este projeto tem como objetivo o desenvolvimento de uma API capa
 <img src="/img/secret-manager.png" alt="secret_manager" height="50" />
 <img src="/img/terraform.png" alt="terraform" height="50" />
 <img src="/img/docker-logo.png" alt="docker" height="50" />
+<img src="/img/cloud_build.png" alt="cloud_build" height="50" />
 <img src="/img/git_hub.jpg" alt="git_hub" height="50" />
 <img src="/img/api_gateway.png" alt="api_gateway" height="50" />
 </p>
