@@ -121,12 +121,12 @@ paths:
           description: Wrong Format of Request
           schema:
             type: object
-  /produtos:
+  /produtos/create:
     post:
       summary: Produtos_Create
       operationId: Produtos_create
       x-google-backend:             
-        address: https://fastapi-service-build-utn4tts4gq-uc.a.run.app/produtos
+        address: https://fastapi-service-build-utn4tts4gq-uc.a.run.app/produtos/create
       parameters:
         - name: body_delete
           in: body
@@ -181,11 +181,12 @@ paths:
           description: Wrong Format of Request
           schema:
             type: object
+  /produtos/select:
     get:
       summary: Select_Produtos
       operationId: Produtos_select
       x-google-backend:             
-        address: https://fastapi-service-build-utn4tts4gq-uc.a.run.app/produtos
+        address: https://fastapi-service-build-utn4tts4gq-uc.a.run.app/produtos/select
       parameters:
         - name: page
           in: query
@@ -256,11 +257,12 @@ paths:
           description: Wrong Format of Request
           schema:
             type: object
+  /produtos/update:
     put:
       summary: Produtos_Update
       operationId: Produtos_update
       x-google-backend:             
-        address: https://fastapi-service-build-utn4tts4gq-uc.a.run.app/produtos
+        address: https://fastapi-service-build-utn4tts4gq-uc.a.run.app/produtos/update
       responses:
         '200':
           description: A successful response
@@ -290,11 +292,12 @@ paths:
           description: Wrong Format of Request
           schema:
             type: object
+  /produtos/delete:
     delete:
       summary: Produtos_Delete
       operationId: Produtos_delete
       x-google-backend:             
-        address: https://fastapi-service-build-utn4tts4gq-uc.a.run.app/produtos
+        address: https://fastapi-service-build-utn4tts4gq-uc.a.run.app/produtos/delete
       parameters:
         - name: body_delete
           in: body
