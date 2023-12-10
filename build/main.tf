@@ -19,7 +19,7 @@ resource "google_secret_manager_secret_version" "github_token_secret_version" {
 data "google_iam_policy" "serviceagent_secretAccessor" {
     binding {
         role = "roles/secretmanager.secretAccessor"
-        members = ["serviceAccount:service-282148687829@gcp-sa-cloudbuild.iam.gserviceaccount.com"]
+        members = ["serviceAccount:${var.service_account}"]
     }
 }
 
@@ -35,7 +35,7 @@ resource "google_cloudbuildv2_connection" "my-connection" {
   name = "connection_cloud_build"
 
   github_config {
-    app_installation_id = 43531708
+    app_installation_id = var.app_installation_id
     authorizer_credential {
       oauth_token_secret_version = google_secret_manager_secret_version.github_token_secret_version.id
     }
@@ -45,7 +45,7 @@ resource "google_cloudbuildv2_connection" "my-connection" {
 resource "google_cloudbuildv2_repository" "my-repository" {
   name = "rep-cloud_build"
   parent_connection = google_cloudbuildv2_connection.my-connection.id
-  remote_uri = "https://github.com/brenonogueirasilva/api_cloud_build_private.git"
+  remote_uri = var.remote_uri
 }
 
 resource "google_cloudbuild_trigger" "repo-trigger" {
