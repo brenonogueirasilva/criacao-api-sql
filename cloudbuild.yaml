@@ -1,0 +1,24 @@
+steps:
+  # Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'us-east1-docker.pkg.dev/apt-theme-402300/repo-docker/fast_api_build', '.']
+  # Push the Docker image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-east1-docker.pkg.dev/apt-theme-402300/repo-docker/fast_api_build']
+#   # Deploy to Cloud Run
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'fastapi-service-build'
+      - '--allow-unauthenticated'
+      - '--image=us-east1-docker.pkg.dev/apt-theme-402300/repo-docker/fast_api_build:latest'
+      - '--port=8000'
+      - '--service-account=brasil-api-cloud-storage@apt-theme-402300.iam.gserviceaccount.com'
+      - '--max-instances=1'
+      - '--cpu-boost'
+      - '--region=us-central1'
+      - '--project=apt-theme-402300'
+options:
+  logging: CLOUD_LOGGING_ONLY
+# Teste 2
