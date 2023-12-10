@@ -4,6 +4,9 @@ from sqlalchemy import create_engine
 from urllib.parse import quote
 
 class MySql:
+    """
+    A class representing a MySQL database connection and operations.
+    """
     def __init__(self, host, user, password, database):
         self.host = host 
         self.user = user 
@@ -11,6 +14,9 @@ class MySql:
         self.database = database
 
     def start_connection(self):
+        """
+        Establishes a connection to the MySQL database and initializes a cursor.
+        """
         self.connection = mysql.connector.connect(
         host= self.host,
         user= self.user,
@@ -20,10 +26,20 @@ class MySql:
         self.cursor = self.connection.cursor()
 
     def close_connection(self):
-         self.cursor.close()
-         self.connection.close()
+        """
+        Closes the database connection and cursor.
+        """
+        self.cursor.close()
+        self.connection.close()
 
-    def select(self, sql_query):
+    def select(self, sql_query: str):
+        """
+        Executes a SELECT SQL query and returns the result as a DataFrame.
+        Parameters:
+        - sql_query (str): The SELECT SQL query to be executed.
+        Returns:
+        - pd.DataFrame: A DataFrame containing the query result.
+        """
         try:
             self.start_connection()
             self.cursor.execute(sql_query)
@@ -36,6 +52,12 @@ class MySql:
             self.close_connection()
 
     def show_tables(self):
+        """
+        Retrieves a list of tables in the connected MySQL database.
+
+        Returns:
+        - list: A list containing table names.
+        """        
         try:
             self.start_connection()
             self.cursor.execute(f"SHOW TABLES")
@@ -50,6 +72,12 @@ class MySql:
             self.close_connection()
 
     def ddl_operation(self, sql_query):
+        """
+        Executes a Data Definition Language (DDL) SQL query.
+
+        Parameters:
+        - sql_query (str): The DDL SQL query to be executed.
+        """
         try:
             self.start_connection()
             self.cursor.execute(sql_query)
@@ -59,7 +87,12 @@ class MySql:
         finally:
             self.close_connection()
 
-    def dml_operation(self, sql_query):
+    def dml_operation(self, sql_query: str):
+        """
+        Executes a Data Manipulation Language (DML) SQL query.
+        Parameters:
+        - sql_query (str): The DML SQL query to be executed.
+        """        
         try:
             self.start_connection()
             self.cursor.execute(sql_query)
@@ -70,7 +103,14 @@ class MySql:
         finally:
             self.close_connection()
 
-    def insert_df(self, data_frame: pd.DataFrame, table_name: str):
+    def insert_df(self, data_frame: pd.DataFrame, table_name: str) -> pd.DataFrame:
+        """
+        Inserts data from a DataFrame into the specified table.
+
+        Parameters:
+        - data_frame (pd.DataFrame): The DataFrame containing data to be inserted.
+        - table_name (str): The name of the table to insert data into.
+        """
         try:
             string_connection= f"mysql+mysqlconnector://{self.user}:{quote(self.password)}@{self.host}:3306/{self.database}"
             engine = create_engine(string_connection)

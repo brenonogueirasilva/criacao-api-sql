@@ -18,3 +18,15 @@ variable "github_token_file" {
   description = "Token GitHub"
   default     = "../github_token.json"
 }
+
+variable "app_installation_id" {
+  type = number
+  default = 43531708   
+}
+
+variable "remote_uri" {
+  type = string
+  default = "https://github.com/brenonogueirasilva/api_cloud_build_private.git" 
+}
+
+
