@@ -34,7 +34,7 @@ router_produto = APIRouter(prefix='/produtos')
 
 table_name = 'produtos'
 
-@router_produto.get("/", tags=["Produtos"], summary="Select Produtos" ) #, dependencies= [Depends(AuthBearer())])
+@router_produto.get("/select", tags=["Produtos"], summary="Select Produtos" ) #, dependencies= [Depends(AuthBearer())])
 async def select_api( 
     page: int = Query(1, description='Numero da pagina', ge=1), 
     page_size: int = Query(10, description='Quantidade itens por pagina', ge=5, le=100),
@@ -84,7 +84,7 @@ async def select_api(
 #     return response
 
 
-@router_produto.delete("/", tags=["Produtos"], summary="Delete Produtos"  , dependencies= [Depends(AuthBearer())])
+@router_produto.delete("/delete", tags=["Produtos"], summary="Delete Produtos"  , dependencies= [Depends(AuthBearer())])
 async def delete_api(
     params : ModelProduct
     ):
@@ -98,7 +98,7 @@ async def delete_api(
     mysql_connector.dml_operation(sql_delete)
     return message
 
-@router_produto.post("/", tags=["Produtos"], summary="Create Produtos" , dependencies= [Depends(AuthBearer())])
+@router_produto.post("/create", tags=["Produtos"], summary="Create Produtos" , dependencies= [Depends(AuthBearer())])
 async def create_api(
     ls_params : List[ModelProductCreate]
     ):
@@ -109,7 +109,7 @@ async def create_api(
     message = f"Registers Inserted : {len(ls_dicts)}"
     return message
 
-@router_produto.put("/", tags=["Produtos"], summary="Update Produtos"  , dependencies= [Depends(AuthBearer())])
+@router_produto.put("/put", tags=["Produtos"], summary="Update Produtos"  , dependencies= [Depends(AuthBearer())])
 async def update_api(
     params : ModelProductUpdate
     ):
