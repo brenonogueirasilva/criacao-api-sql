@@ -51,7 +51,7 @@ Com os dados já disponíveis no banco MySql é possível iniciar o desenvolvime
 
 A API interage com a tabela de produtos, possuindo um endpoint chamado produtos, com quatro tipos de requisições diferentes seguindo o padrão REST API: GET (retorno de informações), PUT (alteração de dados), DELETE (exclusão) e POST (criação de registros). As requisições diferentes do GET necessitam de um objeto JSON no corpo da requisição, sendo validado por modelos definidos com a biblioteca Pydantic, no arquivo [base_models.py](src/classes/base_models.py). A lógica das requisições e endpoints é implementada usando o framework FastAPI, no arquivo [produtos.py](src/routes/produtos.py). 
 
-A lógica de interação da API com o banco é realizada pela classe integrate_api_database, que transforma as entradas fornecidas pela requisição em consultas SQL para operações CRUD no banco. Adicionalmente, foi incorporada uma lógica de paginação para eficiência e desempenho. Para garantir a segurança, implementou-se a autenticação por meio de token JWT, utilizando as classes [AuthBearer](src/classes/auth_bearer.py) e [JwtHandler](src/classes/jwt_handler.py). 
+A lógica de interação da API com o banco é realizada pela classe [IntegrateApiDataBase](src/classes/integrate_api_database.py) , que transforma as entradas fornecidas pela requisição em consultas SQL para operações CRUD no banco. Adicionalmente, foi incorporada uma lógica de paginação para eficiência e desempenho. Para garantir a segurança, implementou-se a autenticação por meio de token JWT, utilizando as classes [AuthBearer](src/classes/auth_bearer.py) e [JwtHandler](src/classes/jwt_handler.py). 
 
 ### 3. Criação da Imagem Docker
 
