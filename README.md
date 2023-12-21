@@ -43,7 +43,7 @@ Nesse contexto, este projeto tem como objetivo o desenvolvimento de uma API capa
 ### 1. Configuração do Ambiente
 
 A fonte de dados para a API é um banco de dados relacional simulando dados de produção de um aplicativo de e-commerce. Utilizaremos o CloudSQL, um serviço gerenciado de banco de dados relacional no Google Cloud Platform (GCP), com MySQL como Sistema Gerenciador de Banco de Dados (SGBD). Os dados estão disponíveis em um dataset da Olist, um conhecido e-commerce brasileiro, hospedado no Kaggle (https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce).
-Dentro da pasta source do código-fonte, há um diretório chamado data_ingestion. Nele, encontra-se um script Python (link do script) capaz de realizar a ingestão de dados da tabela de produtos no banco MySQL. As credenciais para interagir com o banco são armazenadas em um arquivo JSON no Secret Manager do GCP, sendo acessadas por meio de uma biblioteca que retorna essas credenciais para a conexão com o banco.
+Dentro da pasta source do código-fonte, há um diretório chamado [data_ingestion](src/data_ingestion/) . Nele, encontra-se um [script Python](src/data_ingestion/data_ingestion.py) capaz de realizar a ingestão de dados da tabela de produtos no banco MySQL. As credenciais para interagir com o banco são armazenadas em um arquivo JSON no Secret Manager do GCP, sendo acessadas por meio de uma biblioteca que retorna essas credenciais para a conexão com o banco.
 
 ### 2. Desenvolvimento da Lógica da API
 
