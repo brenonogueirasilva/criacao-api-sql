@@ -17,7 +17,7 @@ Nesse contexto, este projeto tem como objetivo o desenvolvimento de uma API capa
 - **Terraform**: Ferramenta que permite o provisionamento eficiente de toda a infraestrutura necessária, seguindo a metodologia de Infraestrutura como Código (IaC). Facilita a gestão e manutenção consistente da infraestrutura 
 - **Docker**: Utilizado para criar imagens com as biliotecas necessárias que serão empregadas no CloudRun. 
 - **Cloud Build**: Servico que possibilita implementar o deploy automatico de codigo e imagens de containers na nuvem, funcionando de forma integrado ao GitHub
-- **GitHub**: Respositório responsável pelo versionamento do codigo, sendo também o gatilho do Cloud Build sempre que sofrer novas alterações.
+- **GitHub**: Repositório responsável pelo versionamento do codigo, sendo também o gatilho do Cloud Build sempre que sofrer novas alterações.
 - **Api Gateway**: servico que fornece uma camada de gerenciamento, proteção e monitoramento da API, podendo ser utilizado tambem para unificar difernetes servicos e diferentes rotas de aplicações diferentes.
 
 <p align="left">
