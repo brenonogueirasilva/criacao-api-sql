@@ -15,7 +15,7 @@ Nesse contexto, este projeto tem como objetivo o desenvolvimento de uma API capa
 - **Python**: Linguagem de programação utilizada no projeto, integrada ao framework FastAPI para a implementação da lógica da API. 
 - **Secret Manager**: Serviço de armazenamento de senhas e outros dados sensíveis, utilizado para armazenar informações sobre as credencias do banco, garantindo maior segurança a API. 
 - **Terraform**: Ferramenta que permite o provisionamento eficiente de toda a infraestrutura necessária, seguindo a metodologia de Infraestrutura como Código (IaC). Facilita a gestão e manutenção consistente da infraestrutura 
-- **Docker**: Utilizado para criar imagens com as biliotecas necessárias que serão empregadas no CloudRun. 
+- **Docker**: Utilizado para criar imagens com as bibliotecas necessárias que serão empregadas no CloudRun. 
 - **Cloud Build**: Servico que possibilita implementar o deploy automatico de codigo e imagens de containers na nuvem, funcionando de forma integrado ao GitHub
 - **GitHub**: Repositório responsável pelo versionamento do codigo, sendo também o gatilho do Cloud Build sempre que sofrer novas alterações.
 - **Api Gateway**: servico que fornece uma camada de gerenciamento, proteção e monitoramento da API, podendo ser utilizado tambem para unificar difernetes servicos e diferentes rotas de aplicações diferentes.
